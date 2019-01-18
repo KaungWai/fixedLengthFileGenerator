@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Fixed_Length_File_Generator</a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <form class="form-inline" action="#">
+          <div class="form-group">
+            <label for="email"> Row : </label>
+            <input type="number" class="form-control" id="rowCnt" max="100" min="1">
+          </div>
+          <div class="form-group">
+            <label for="pwd"> Column : </label>
+            <input type="number" class="form-control" id="colCnt" max="100" min="1">
+          </div>
+          <button type="submit" class="btn btn-default" onclick="changeRowColumn();">#1 Update_Table</button>
+          <button type="submit" class="btn btn-default" onclick="changeWidth();">#2 Update_Width</button>
+          <button type="submit" class="btn btn-default" onclick="ex_port();">#3 Export</button>
+          <button type="submit" class="btn btn-default" onclick="im_port();">#4 Import</button>
+        </form>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-md-8" style="height: 500px;overflow: scroll;">
+       <div>
+        <table class="table table-bordered">
+          <tbody id="tblDataWidth">
+          </tbody>
+        </table>
+        <table class="table table-bordered">
+          <tbody id="tblDataRecords">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <textarea style="width: 100%;height: 500px;overflow: scroll;" readonly=""></textarea>
+    </div>
+
+  </div>
+</div><!-- /.container -->
+
+</body>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+
+  });
+
+  function changeRowColumn(){
+    var rowCnt = $("#rowCnt").val();
+    var colCnt = $("#colCnt").val();
+
+    $("#tblDataWidth").html("");
+    if(rowCnt>0){
+      eachRow = $("<tr>");
+      eachColumn = $("<td>",{class:"text-right"});
+      hash = "";
+      if(rowCnt<10){
+        hash = "#";
+      } else if(rowCnt<100){
+        hash = "##";
+      } else {
+        hash = "###";
+      }
+      eachColumn.append(hash);
+      eachRow.append(eachColumn);
+      for(j=0;j<colCnt;j++){
+        eachColumn = $("<td>");
+        textBox = $("<input>",{type:"number"});
+        eachColumn.append(textBox);
+        eachRow.append(eachColumn);
+      }
+      $("#tblDataWidth").append(eachRow);
+    }
+
+    $("#tblDataRecords").html("");
+    for(i=0;i<rowCnt;i++){
+      eachRow = $("<tr>");
+      eachColumn = $("<td>",{class:"text-right"});
+      eachColumn.append(i+1);
+      eachRow.append(eachColumn);
+      for(j=0;j<colCnt;j++){
+        eachColumn = $("<td>");
+        textBox = $("<input>",{type:"text"});
+        eachColumn.append(textBox);
+        eachRow.append(eachColumn);
+      }
+      $("#tblDataRecords").append(eachRow);
+    }
+  }
+
+  function changeWidth(){
+
+  }
+
+  function output(){
+
+  }
+</script>
+</html>
