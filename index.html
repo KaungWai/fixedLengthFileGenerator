@@ -81,6 +81,9 @@
 
   });
 
+  localStorage.clear();
+  localStorage.setItem("dataTable",new Array());
+
   function changeRowColumn(){
     var rowCnt = $("#rowCnt").val();
     var colCnt = $("#colCnt").val();
@@ -117,19 +120,27 @@
       for(j=0;j<colCnt;j++){
         eachColumn = $("<td>");
         textBox = $("<input>",{type:"text"});
+        textBox.attr({"row":i,"column":j});
+        textBox.change(function(){
+          row = parseInt($(this).attr("row"));
+          col = parseInt($(this).attr("column"));
+          dataTable = localStorage.getItem("dataTable");
+          dataTable[row][col] = $(this).val();
+        });
         eachColumn.append(textBox);
         eachRow.append(eachColumn);
       }
       $("#tblDataRecords").append(eachRow);
     }
   }
+  function updateDataTable(row,col,val){
+    dataTable[row][col] = val;
+    console.log(dataTable);
+ }
 
-  function changeWidth(){
+ function ex_port(){
 
-  }
+ }
 
-  function output(){
-
-  }
 </script>
 </html>
