@@ -13,7 +13,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">Fixed_Length_File_Generator</a>
+        <a class="navbar-brand" href="#">Fixed-Length File Generator</a>
       </div>
       <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
@@ -26,7 +26,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
-        <form class="form-inline" action="index.html#">
+        <form class="form-inline" action="#">
           <div class="form-group">
             <label for="email"> Row : </label>
             <input type="number" class="form-control" id="rowCnt" max="100" min="1">
@@ -36,15 +36,14 @@
             <input type="number" class="form-control" id="colCnt" max="100" min="1">
           </div>
           <button type="submit" class="btn btn-default" onclick="changeRowColumn();">#1 Update_Table</button>
-          <button type="submit" class="btn btn-default" onclick="changeWidth();">#2 Update_Width</button>
-          <button type="submit" class="btn btn-default" onclick="ex_port();">#3 Export</button>
-          <button type="submit" class="btn btn-default" onclick="im_port();">#4 Import</button>
+          <button type="submit" class="btn btn-default" onclick="_export();">#2 Export</button>
+          <button type="submit" class="btn btn-default" onclick="_import();" disabled="">#3 Import</button>
         </form>
       </div>
     </div>
     <hr>
     <div class="row">
-      <div class="col-md-8" style="height: 500px;overflow: scroll;">
+      <div class="col-md-8" style="max-height: 500px;overflow: auto;">
        <div>
         <table class="table table-bordered">
           <tbody id="tblDataWidth">
@@ -58,7 +57,7 @@
     </div>
 
     <div class="col-md-4">
-      <textarea style="width: 100%;height: 500px;overflow: scroll;" readonly=""></textarea>
+      <textarea style="width: 100%;height: 500px;overflow: auto;resize: none;" readonly="" id="outputArea" placeholder=" Output Area"></textarea>
     </div>
 
   </div>
@@ -77,16 +76,24 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
-  $(document).ready(function(){
+  // global vars
+  dataTable = [];
+  dataWidth = [];
 
+  $(document).ready(function(){
+    url = window.location.href.split('?')[0];
+    url += "?#"
+    history.replaceState(null,null,url);
   });
 
-  localStorage.clear();
-  localStorage.setItem("dataTable",new Array());
+  sessionStorage.setItem("dataTable",new Array());
 
   function changeRowColumn(){
     var rowCnt = $("#rowCnt").val();
     var colCnt = $("#colCnt").val();
+    dataTable　= [];
+    dataWidth = [];
+
 
     $("#tblDataWidth").html("");
     if(rowCnt>0){
@@ -103,8 +110,17 @@
       eachColumn.append(hash);
       eachRow.append(eachColumn);
       for(j=0;j<colCnt;j++){
+        // array
+        dataWidth.push(1);
+
+        // dom
         eachColumn = $("<td>");
-        textBox = $("<input>",{type:"number"});
+        textBox = $("<input>",{type:"number",value:1,min:1});
+        textBox.attr({"column":j});
+        textBox.change(function(){
+          col = parseInt($(this).attr("column"));
+          dataWidth[col] = $(this).val();
+        });
         eachColumn.append(textBox);
         eachRow.append(eachColumn);
       }
@@ -113,18 +129,31 @@
 
     $("#tblDataRecords").html("");
     for(i=0;i<rowCnt;i++){
+      // array
+      dataTable.push([]);
+
+      // dom
       eachRow = $("<tr>");
       eachColumn = $("<td>",{class:"text-right"});
       eachColumn.append(i+1);
       eachRow.append(eachColumn);
       for(j=0;j<colCnt;j++){
+        // array
+        dataTable[i].push(null);
+
+        // dom
         eachColumn = $("<td>");
         textBox = $("<input>",{type:"text"});
-        textBox.attr({"row":i,"column":j});
+        textBox.attr({"row":i,"column":j,"maxlength":dataWidth[j]});
+        // update max length
+        textBox.click(function(){
+          console.log(dataWidth);
+          $(this).attr({"maxlength":dataWidth[parseInt($(this).attr("column"))]});
+        });
+        // update dataTable Array
         textBox.change(function(){
           row = parseInt($(this).attr("row"));
           col = parseInt($(this).attr("column"));
-          dataTable = localStorage.getItem("dataTable");
           dataTable[row][col] = $(this).val();
         });
         eachColumn.append(textBox);
@@ -133,14 +162,30 @@
       $("#tblDataRecords").append(eachRow);
     }
   }
-  function updateDataTable(row,col,val){
-    dataTable[row][col] = val;
-    console.log(dataTable);
- }
 
- function ex_port(){
+  function _export(){
+    var output = "";
+    for(row=0;row<dataTable.length;row++){
+      for(col=0;col<dataTable[row].length;col++){
+        var w = parseInt(dataWidth[col]);
+        var cw;
+        try {
+          cw = dataTable[row][col].length;
+        } catch (e){
+          cw = 0;
+        }
 
- }
+        var o = dataTable[row][col];
+        if(!o) o = "";
+        while(cw<w){
+          o += " ";
+          cw++;
+        }
+        output += o;
+      }
+    }
+    $("#outputArea").html(output);
+  }
 
 </script>
 </html>
